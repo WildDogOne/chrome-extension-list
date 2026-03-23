@@ -190,9 +190,7 @@ def main():
             all_urls.extend(urls)
         except Exception as e:
             print(f"Error reading sitemap {sm_url}: {e}")
-        time.sleep(0.5)  # be gentle
-        # TODO: Remove Break once done testing
-        break
+        time.sleep(0.1)  # be gentle
 
     print(f"Total extension URLs found: {len(all_urls)}")
 
@@ -224,7 +222,7 @@ def main():
                 json.dump(results, f, ensure_ascii=False, indent=2)
             counter = 0
         # Sleep a bit to reduce load; adjust as needed.
-        time.sleep(0.1)
+        time.sleep(0.01)
 
     out_path = Path(OUT_FILE)
     with out_path.open("w", encoding="utf-8") as f:
