@@ -133,11 +133,26 @@ def scrape_extension_detail(ext_id: str) -> Dict:
         if desc_div:
             description = desc_div.get_text(" ", strip=True)
 
-    # Category: often in meta tags or breadcrumb.
+    # Category: often in breadcrumb links
     category = None
     cat_meta = soup.find("meta", attrs={"itemprop": "applicationCategory"})
     if cat_meta and cat_meta.get("content"):
         category = cat_meta["content"].strip()
+    else:
+        # Try to find category from breadcrumb links - look for all links with category-like classes
+        categories = []
+        # Find all links that might be categories (common classes: gqpEIe, FjUAcd, bgp7Ye)
+        category_links = soup.find_all("a")
+        for link in category_links:
+            classes = link.get('class', [])
+            class_str = " ".join(classes) if classes else ""
+            if "gqpEIe" in class_str or "FjUAcd" in class_str or "bgp7Ye" in class_str:
+                text = link.get_text(strip=True)
+                # Filter out non-category text like "Extensions" (plural) which is just a header
+                if text and text != "Extensions":
+                    categories.append(text)
+        if categories:
+            category = categories
 
     # Rating and rating count from visible text
     rating = None
