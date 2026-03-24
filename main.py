@@ -139,21 +139,23 @@ def scrape_extension_detail(ext_id: str) -> Dict:
     if cat_meta and cat_meta.get("content"):
         category = cat_meta["content"].strip()
 
-    # Rating and rating count in microdata. [web:18]
+    # Rating and rating count from visible text
     rating = None
     ratings = None
-    rating_meta = soup.find("meta", attrs={"itemprop": "ratingValue"})
-    if rating_meta and rating_meta.get("content"):
+    # Look for pattern like "5 out of 5" or "4.5 out of 5"
+    rating_text = soup.find(string=re.compile(r"\d+\.?\d*\s+out of\s+5", re.IGNORECASE))
+    if rating_text:
         try:
-            rating = float(rating_meta["content"])
+            rating = float(rating_text.split()[0])
         except ValueError:
             pass
-
-    rating_count_meta = soup.find("meta", attrs={"itemprop": "ratingCount"})
-    if rating_count_meta and rating_count_meta.get("content"):
+    
+    # Look for pattern like "12 ratings" or similar
+    ratings_text = soup.find(string=re.compile(r"(\d+)\s+ratings", re.IGNORECASE))
+    if ratings_text:
         try:
-            ratings = int(rating_count_meta["content"])
-        except ValueError:
+            ratings = int(re.search(r"(\d+)\s+ratings", ratings_text, re.IGNORECASE).group(1))
+        except (ValueError, AttributeError):
             pass
 
     # Installs (user count): often visible as "200,000+ users". [web:18]
