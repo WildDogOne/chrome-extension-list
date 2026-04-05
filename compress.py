@@ -1,6 +1,12 @@
 import json
 import csv
 
+additional_apps = [{"id": "ghbmnnjooekpmoecnnnilnnbdlolhkhi", "name": "Google Docs Offline"},
+                   {"id": "nmhdhpibnnopknkmonacoephklnflpho", "name": "Unknown"},
+                   {"id": "elhekieabhbkpmcefcoobjddigjcaadp", "name": "Unknown"},
+                   {"id": "gmgoamodcdcjnbaobigkjelfplakmdhh", "name": "Unknown"}
+                   ]
+
 with open('chrome_extensions.json', 'r', encoding='utf-8') as f:
     data = json.load(f)
 
